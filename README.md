@@ -1,2 +1,5 @@
 # aioleague
-League of Legends API Python Bindings using Asyncio
+Asyncio Python API Bindings for League of Legends API.
+
+
+Supported for Python 3.6+

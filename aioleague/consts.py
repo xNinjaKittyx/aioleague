@@ -1,0 +1,18 @@
+
+# Seasons
+SEASONS = [
+    "PRESEASON 3",
+    "SEASON 3",
+    "PRESEASON 2014",
+    "SEASON 2014",
+    "PRESEASON 2015",
+    "SEASON 2015",
+    "PRESEASON 2016",
+    "SEASON 2016",
+    "PRESEASON 2017",
+    "SEASON 2017",
+    "PRESEASON 2018",
+    "SEASON 2018",
+    "PRESEASON 2019",
+    "SEASON 2019",
+]

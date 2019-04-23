@@ -5,19 +5,14 @@ import aiohttp
 from dacite import from_dict
 
 from .models import (
-    BannedChampion,
+    ChampionInfo,
     CurrentGameInfo,
-    CurrentGameParticipant,
     FeaturedGames,
-    GameCustomizationObject,
-    Incident,
-    Message,
-    Observer,
-    Perks,
-    Service,
+    MatchDTO,
+    MatchlistDTO,
+    MatchTimelineDTO,
     ShardStatus,
     SummonerDTO,
-    Translation,
 )
 
 
@@ -61,8 +56,10 @@ class AIOLeague:
     async def get_total_mastery_score(self, summoner_id: str):
         pass
 
-    async def get_champion_rotation(self):
-        pass
+    async def get_champion_rotation(self) -> ChampionInfo:
+        async with self._client.get(f"{self.endpoint}/lol/platform/v3/champion-rotations") as r:
+            result = await r.json()
+        return from_dict(data_class=ChampionInfo, data=result)
 
     async def get_challenger_leagues(self, queue: str):
         pass
@@ -87,24 +84,46 @@ class AIOLeague:
             result = await r.json()
         return from_dict(data_class=ShardStatus, data=result)
 
-    async def get_match(self, match_id: str):
-        pass
+    async def get_match(self, match_id: str) -> MatchDTO:
+        async with self._client.get(f"{self.endpoint}/lol/match/v4/matches/{match_id}") as r:
+            result = await r.json()
+        return from_dict(data_class=MatchDTO, data=result)
 
     async def get_matchlist(
         self,
         account_id: str,
-        champion: Set[int] = None,
-        queue: Set[int] = None,
-        season: Set[int] = None,
+        champion: int = None,
+        queue: int = None,
+        season: int = None,
         end_time: int = None,
         begin_time: int = None,
         end_index: int = None,
         begin_index: int = None
-    ):
-        pass
+    ) -> MatchlistDTO:
+        params = {}
+        if champion is not None:
+            params['champion'] = champion
+        if queue is not None:
+            params['queue'] = queue
+        if season is not None:
+            params['season'] = season
+        if end_time is not None:
+            params['endTime'] = end_time
+        if begin_time is not None:
+            params['beginTime'] = begin_time
+        if end_index is not None:
+            params['endIndex'] = end_index
+        if begin_index is not None:
+            params['beginIndex'] = begin_index
 
-    async def get_match_timeliine(self, match_id: str):
-        pass
+        async with self._client.get(f"{self.endpoint}/lol/match/v4/matchlists/by-account/{account_id}", params=params) as r:
+            result = await r.json()
+        return from_dict(data_class=MatchlistDTO, data=result)
+
+    async def get_match_timeline(self, match_id: str) -> MatchTimelineDTO:
+        async with self._client.get(f"{self.endpoint}/lol/match/v4/timelines/by-match/{match_id}") as r:
+            result = await r.json()
+        return from_dict(data_class=MatchTimelineDTO, data=result)
 
     async def get_match_by_tournament(self, tournament_code: str, match_id: Optional[str] = None):
         pass

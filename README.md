@@ -30,3 +30,6 @@ asyncio.get_event_loop.run_until_complete(sample("YOUR API KEY"))
 
 ```
 
+# Useful Links:
+
+Riot's Full API Documentation: https://developer.riotgames.com/api-methods/

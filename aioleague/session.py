@@ -5,12 +5,18 @@ import aiohttp
 from dacite import from_dict
 
 from .models import (
-    Translation,
-    Message,
+    BannedChampion,
+    CurrentGameInfo,
+    CurrentGameParticipant,
+    GameCustomizationObject,
     Incident,
+    Message,
+    Observer,
+    Perks,
     Service,
     ShardStatus,
-    SummonerDTO
+    SummonerDTO,
+    Translation,
 )
 
 
@@ -103,10 +109,14 @@ class AIOLeague:
         pass
 
     async def get_current_game(self, summoner_id: str):
-        pass
+        async with self._client.get(f"{self.endpoint}/lol/spectator/v4/active-games/by-summoner/{summoner_id}") as r:
+            result = await r.json()
+        return from_dict(data_class=CurrentGameInfo, data=result)
 
     async def get_featured_games(self):
-        pass
+        async with self._client.get(f"{self.endpoint}/lol/spectator/v4/featured-games") as r:
+            result = await r.json()
+        return from_dict(data_class=CurrentGameInfo, data=result)
 
     async def get_summoner_by_account_id(self, account_id: str):
         async with self._client.get(f"{self.endpoint}/lol/summoner/v4/summoners/by-account/{account_id}") as r:

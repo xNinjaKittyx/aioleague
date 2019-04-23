@@ -8,6 +8,7 @@ from .models import (
     BannedChampion,
     CurrentGameInfo,
     CurrentGameParticipant,
+    FeaturedGames,
     GameCustomizationObject,
     Incident,
     Message,
@@ -108,32 +109,32 @@ class AIOLeague:
     async def get_match_by_tournament(self, tournament_code: str, match_id: Optional[str] = None):
         pass
 
-    async def get_current_game(self, summoner_id: str):
+    async def get_current_game(self, summoner_id: str) -> CurrentGameInfo:
         async with self._client.get(f"{self.endpoint}/lol/spectator/v4/active-games/by-summoner/{summoner_id}") as r:
             result = await r.json()
         return from_dict(data_class=CurrentGameInfo, data=result)
 
-    async def get_featured_games(self):
+    async def get_featured_games(self) -> FeaturedGames:
         async with self._client.get(f"{self.endpoint}/lol/spectator/v4/featured-games") as r:
             result = await r.json()
-        return from_dict(data_class=CurrentGameInfo, data=result)
+        return from_dict(data_class=FeaturedGames, data=result)
 
-    async def get_summoner_by_account_id(self, account_id: str):
+    async def get_summoner_by_account_id(self, account_id: str) -> SummonerDTO:
         async with self._client.get(f"{self.endpoint}/lol/summoner/v4/summoners/by-account/{account_id}") as r:
             result = await r.json()
         return from_dict(data_class=SummonerDTO, data=result)
 
-    async def get_summoner_by_name(self, name: str):
+    async def get_summoner_by_name(self, name: str) -> SummonerDTO:
         async with self._client.get(f"{self.endpoint}/lol/summoner/v4/summoners/by-name/{name}") as r:
             result = await r.json()
         return from_dict(data_class=SummonerDTO, data=result)
 
-    async def get_summoner_by_puuid(self, puuid: str):
+    async def get_summoner_by_puuid(self, puuid: str) -> SummonerDTO:
         async with self._client.get(f"{self.endpoint}/lol/summoner/v4/summoners/by-puuid/{puuid}") as r:
             result = await r.json()
         return from_dict(data_class=SummonerDTO, data=result)
 
-    async def get_summoner_by_summoner_id(self, summoner_id: str):
+    async def get_summoner_by_summoner_id(self, summoner_id: str) -> SummonerDTO:
         async with self._client.get(f"{self.endpoint}/lol/summoner/v4/summoners/{summoner_id}") as r:
             result = await r.json()
         return from_dict(data_class=SummonerDTO, data=result)

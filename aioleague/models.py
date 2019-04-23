@@ -122,3 +122,22 @@ class Participant:
     spell2Id: int
 
 
+@dataclass
+class FeaturedGameInfo:
+    gameId: int
+    gameStartTime: int
+    platformId: str
+    gameMode: str
+    mapId: int
+    gameType: str
+    bannedChampions: List[BannedChampion]
+    observers: Observer
+    participants: List[Participant]
+    gameLength: int
+    gameQueueConfigId: int
+
+
+@dataclass
+class FeaturedGames:
+    clientRefreshInterval: int
+    gameList: List[FeaturedGameInfo]

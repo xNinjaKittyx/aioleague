@@ -1,5 +1,5 @@
 
-from typing import Optional, Set
+from typing import Optional, Union
 
 import aiohttp
 from dacite import from_dict
@@ -10,6 +10,7 @@ from .models import (
     FeaturedGames,
     MatchDTO,
     MatchlistDTO,
+    MatchReferenceDTO,
     MatchTimelineDTO,
     ShardStatus,
     SummonerDTO,
@@ -48,13 +49,13 @@ class AIOLeague:
         return f"https://{self.region}.api.riotgames.com"
 
     async def get_all_champion_masteries(self, summoner_id: str):
-        pass
+        raise NotImplementedError
 
     async def get_champion_mastery(self, summoner_id: str, champion_id: str):
-        pass
+        raise NotImplementedError
 
     async def get_total_mastery_score(self, summoner_id: str):
-        pass
+        raise NotImplementedError
 
     async def get_champion_rotation(self) -> ChampionInfo:
         async with self._client.get(f"{self.endpoint}/lol/platform/v3/champion-rotations") as r:
@@ -62,29 +63,35 @@ class AIOLeague:
         return from_dict(data_class=ChampionInfo, data=result)
 
     async def get_challenger_leagues(self, queue: str):
-        pass
+        raise NotImplementedError
 
     async def get_league_entries_by_summoner(self, summoner_id: str):
-        pass
+        raise NotImplementedError
 
     async def get_league_entries(self, queue: str, tier: str, division: str):
-        pass
+        raise NotImplementedError
 
     async def get_grandmaster_league(self, queue: str):
-        pass
+        raise NotImplementedError
 
     async def get_league_by_id(self, league_id: str):
-        pass
+        raise NotImplementedError
 
     async def get_master_league(self, queue: str):
-        pass
+        raise NotImplementedError
 
     async def get_shard_data(self) -> ShardStatus:
         async with self._client.get(f"{self.endpoint}/lol/status/v3/shard-data") as r:
             result = await r.json()
         return from_dict(data_class=ShardStatus, data=result)
 
-    async def get_match(self, match_id: str) -> MatchDTO:
+    async def get_match(self, match: Union[MatchReferenceDTO, int]) -> MatchDTO:
+        if isinstance(match, MatchReferenceDTO):
+            match_id = match.gameId
+        elif isinstance(match, int):
+            match_id = match
+        else:
+            raise ValueError(f'Invalid match type: {type(match)}')
         async with self._client.get(f"{self.endpoint}/lol/match/v4/matches/{match_id}") as r:
             result = await r.json()
         return from_dict(data_class=MatchDTO, data=result)

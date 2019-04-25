@@ -1,13 +1,16 @@
 
-from typing import Optional, Union
+from typing import List, Optional, Union
 
 import aiohttp
 from dacite import from_dict
 
 from .models import (
     ChampionInfo,
+    ChampionMasteryDTO,
     CurrentGameInfo,
     FeaturedGames,
+    LeagueEntryDTO,
+    LeagueListDTO,
     MatchDTO,
     MatchlistDTO,
     MatchReferenceDTO,
@@ -48,37 +51,61 @@ class AIOLeague:
     def endpoint(self) -> str:
         return f"https://{self.region}.api.riotgames.com"
 
-    async def get_all_champion_masteries(self, summoner_id: str):
-        raise NotImplementedError
+    async def get_all_champion_masteries(self, summoner_id: str) -> List[ChampionMasteryDTO]:
+        async with self._client.get(
+            f"{self.endpoint}/lol/champion-mastery/v4/champion-masteries/by-summoner/{summoner_id}"
+        ) as r:
+            result = await r.json()
+        return [from_dict(data_class=ChampionMasteryDTO, data=d) for d in result]
 
-    async def get_champion_mastery(self, summoner_id: str, champion_id: str):
-        raise NotImplementedError
+    async def get_champion_mastery(self, summoner_id: str, champion_id: str) -> ChampionMasteryDTO:
+        async with self._client.get(
+            f"{self.endpoint}/lol/champion-mastery/v4/champion-masteries/by-summoner/"
+            f"{summoner_id}/by-champion/{champion_id}"
+        ) as r:
+            result = await r.json()
+        return from_dict(data_class=ChampionMasteryDTO, data=result)
 
-    async def get_total_mastery_score(self, summoner_id: str):
-        raise NotImplementedError
+    async def get_total_mastery_score(self, summoner_id: str) -> int:
+        async with self._client.get(
+            f"{self.endpoint}/lol/champion-mastery/v4/scores/by-summoner/{summoner_id}"
+        ) as r:
+            return int(await r.text())
 
     async def get_champion_rotation(self) -> ChampionInfo:
         async with self._client.get(f"{self.endpoint}/lol/platform/v3/champion-rotations") as r:
             result = await r.json()
         return from_dict(data_class=ChampionInfo, data=result)
 
-    async def get_challenger_leagues(self, queue: str):
-        raise NotImplementedError
+    async def get_challenger_leagues(self, queue: str) -> LeagueListDTO:
+        async with self._client.get(f"{self.endpoint}/lol/league/v4/challengerleagues/by-queue/{queue}") as r:
+            result = await r.json()
+        return from_dict(data_class=LeagueListDTO, data=result)
 
-    async def get_league_entries_by_summoner(self, summoner_id: str):
-        raise NotImplementedError
+    async def get_league_entries_by_summoner(self, summoner_id: str) -> List[LeagueEntryDTO]:
+        async with self._client.get(f"{self.endpoint}/lol/league/v4/entries/by-summoner/{summoner_id}") as r:
+            result = await r.json()
+        return [from_dict(data_class=LeagueEntryDTO, data=d) for d in result]
 
-    async def get_league_entries(self, queue: str, tier: str, division: str):
-        raise NotImplementedError
+    async def get_league_entries(self, queue: str, tier: str, division: str) -> List[LeagueEntryDTO]:
+        async with self._client.get(f"{self.endpoint}/lol/league/v4/entries/{queue}/{tier}/{division}") as r:
+            result = await r.json()
+        return [from_dict(data_class=LeagueEntryDTO, data=d) for d in result]
 
-    async def get_grandmaster_league(self, queue: str):
-        raise NotImplementedError
+    async def get_grandmaster_league(self, queue: str) -> LeagueListDTO:
+        async with self._client.get(f"{self.endpoint}/lol/league/v4/grandmasterleagues/by-queue/{queue}") as r:
+            result = await r.json()
+        return from_dict(data_class=LeagueListDTO, data=result)
 
-    async def get_league_by_id(self, league_id: str):
-        raise NotImplementedError
+    async def get_league_by_id(self, league_id: str) -> LeagueListDTO:
+        async with self._client.get(f"{self.endpoint}/lol/league/v4/leagues/{league_id}") as r:
+            result = await r.json()
+        return from_dict(data_class=LeagueListDTO, data=result)
 
-    async def get_master_league(self, queue: str):
-        raise NotImplementedError
+    async def get_master_league(self, queue: str) -> LeagueListDTO:
+        async with self._client.get(f"{self.endpoint}/lol/league/v4/masterleagues/by-queue/{queue}") as r:
+            result = await r.json()
+        return from_dict(data_class=LeagueListDTO, data=result)
 
     async def get_shard_data(self) -> ShardStatus:
         async with self._client.get(f"{self.endpoint}/lol/status/v3/shard-data") as r:

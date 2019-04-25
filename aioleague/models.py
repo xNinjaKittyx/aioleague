@@ -440,3 +440,66 @@ class ChampionInfo:
     freeChampionIdsForNewPlayers: List[int]
     freeChampionIds: List[int]
     maxNewPlayerLevel: int
+
+
+@dataclass
+class ChampionMasteryDTO:
+    chestGranted: bool
+    championLevel: int
+    championPoints: int
+    championId: int
+    championPointsUntilNextLevel: int
+    lastPlayTime: int
+    tokensEarned: int
+    championPointsSinceLastLevel: int
+    summonerId: str
+
+
+@dataclass
+class MiniSeriesDTO:
+    progress: str
+    losses: int
+    target: int
+    wins: int
+
+
+@dataclass
+class LeagueItemDTO:
+    summonerName:  str
+    hotStreak: bool
+    miniSeries: MiniSeriesDTO
+    wins: int
+    veteran: bool
+    losses: int
+    freshBlood: bool
+    inactive: bool
+    rank: str
+    summonerId: str
+    leaguePoints: int
+
+
+@dataclass
+class LeagueListDTO:
+    leagueId: str
+    tier: str
+    entries: List[LeagueItemDTO]
+    queue: str
+    name: str
+
+
+@dataclass
+class LeagueEntryDTO:
+    queueType: str
+    summonerName: str
+    hotStreak: bool
+    miniSeries: MiniSeriesDTO
+    wins: int
+    veteran: bool
+    lossese: int
+    rank: str
+    leagueId: str
+    inactive: bool
+    freshBlood: bool
+    tier: str
+    summonerId: str
+    leaguePoints: int

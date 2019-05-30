@@ -20,8 +20,8 @@ import aioleague
 
 async def sample(api_key):
     client = aioleague.AIOLeague(api_key)
-    summoner = await session.get_summoner_by_name("NinjaKitty")
-    current_game = await get_current_game(self, summoner.id)
+    summoner = await client.get_summoner_by_name("NinjaKitty")
+    current_game = await client.get_current_game(self, summoner.id)
 
     print(current_game)
 
